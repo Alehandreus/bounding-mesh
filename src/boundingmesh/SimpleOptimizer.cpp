@@ -224,8 +224,14 @@ bool solveConstrainedMinimizationInequalities(
   Eigen::MatrixXd CI(3, constraints.size());
   Eigen::VectorXd ci0(constraints.size());
   for (int i = 0; i < constraints.size(); ++i) {
-    CI.col(i) = constraints[i].normal;
-    ci0(i) = constraints[i].d;
+    const Plane& plane = constraints[i];
+    if (direction == DecimationDirection::Inward) {
+      CI.col(i) = -plane.normal;
+      ci0(i) = -plane.d;
+    } else {
+      CI.col(i) = plane.normal;
+      ci0(i) = plane.d;
+    }
   }
   Eigen::VectorXd x(3);
   Real cost;
